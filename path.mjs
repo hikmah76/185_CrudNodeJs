@@ -7,3 +7,5 @@ const file = "/User?khannendy/contoh.html";
  console.info(path.basename(file));
  console.info(path.extname(file));
  console.info(path.perce(file));
+
+ 
