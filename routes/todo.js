@@ -1,38 +1,21 @@
 const express = require('express');
 const router = express.Router();
 
-
-
-
 let todos = [
-    
-{
-    id : 1, task: "Belajar Nde.Js", complated: false
-},
-{
-    id : 2, task: "Membuat API", complated: false
-},
-{
-    id: 3, task: "Menulis Dokumentasi", completed: false, dueDate: "2023-12-10", priority: "low"
-},
-{
-    id: 4, task: "Menguji Aplikasi", completed: false, dueDate: "2023-12-15", priority: "medium"
-},
-{
-    id: 5, task: "Mengoptimalkan Kode", completed: false, dueDate: "2023-12-20", priority: "high"
-},
-{
-    id: 6, task: "Mengintegrasikan Fitur Baru", completed: false, dueDate: "2023-12-25", priority: "medium"
-}
-
-
-
-
+    { id: 1, task: "Belajar Node.js", completed: false, dueDate: "2023-12-01", priority: "low" },
+    { id: 2, task: "Membuat API", completed: false, dueDate: "2023-12-05", priority: "medium" },
+    { id: 3, task: "Menulis Dokumentasi", completed: false, dueDate: "2023-12-10", priority: "low" },
+    { id: 4, task: "Menguji Aplikasi", completed: false, dueDate: "2023-12-15", priority: "medium" },
+    { id: 5, task: "Mengoptimalkan Kode", completed: false, dueDate: "2023-12-20", priority: "high" },
+    { id: 6, task: "Mengintegrasikan Fitur Baru", completed: false, dueDate: "2023-12-25", priority: "medium" }
 ];
-//Endpoint untuk mendapatkan data todos
-router.get('/', (req, res) => {res.json(todos)});
 
-// Endpoint untuk mendapatkan data todos berdasarkan id
+// Endpoint untuk mendapatkan semua todos
+router.get('/', (req, res) => {
+    res.json(todos);
+});
+
+// Endpoint untuk mendapatkan todo berdasarkan ID
 router.get('/:id', (req, res) => {
     const todoId = parseInt(req.params.id);
     const todo = todos.find(t => t.id === todoId);
@@ -44,21 +27,28 @@ router.get('/:id', (req, res) => {
     }
 });
 
+// Endpoint untuk menambahkan todo baru
 router.post('/', (req, res) => {
+    const { task, dueDate, priority } = req.body; // Mengambil nilai dari body request
+    
+    // Validasi input
+    if (!task || !dueDate || !priority) {
+        return res.status(400).json({ message: 'Task, dueDate, and priority are required' });
+    }
+
     const newTodo = {
         id: todos.length + 1,
-        task: req.body.task, // Correctly reference the task from req.body
+        task,
         completed: false,
-        dueDate: req.body.dueDate, // Menambahkan dueDate
-        priority: req.body.priority // Menambahkan priority
+        dueDate,
+        priority
     };
 
     todos.push(newTodo);
     res.status(201).json(newTodo);
 });
 
-
-//BARU
+// Endpoint untuk mengupdate todo berdasarkan ID
 router.put('/:id', (req, res) => {
     const todoId = parseInt(req.params.id);
     const todo = todos.find(t => t.id === todoId);
@@ -90,6 +80,5 @@ router.delete('/:id', (req, res) => {
     todos.splice(todoIndex, 1); // Menghapus todo dari array
     res.status(204).send(); // Mengembalikan response 204 No Content
 });
-
 
 module.exports = router;
